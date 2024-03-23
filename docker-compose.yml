@@ -1,0 +1,44 @@
+version: "3.8"
+
+services:
+  next:
+    image: next-app
+    build:
+      context: ./my-app
+      dockerfile: Dockerfile
+    env_file: ./my-app/.env
+    ports:
+      - "80:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: nest
+      depends_on: nest
+
+  nest:
+    image: nest-app
+    container_name: nest
+    build:
+      context: ./my-app-api
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      POSTGRES_USER: your_username
+      POSTGRES_PASSWORD: your_password
+      POSTGRES_DB: your_database_name
+      POSTGRES_ADRESS: postgres-db
+      depends_on: postgres
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
