@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  nest:
+    image: nest-app
+    build: .
+    ports:
+      - '3000:3000'
+    environment:
+      POSTGRES_USER: your_username
+      POSTGRES_PASSWORD: your_password
+      POSTGRES_DB: your_database_name
+      POSTGRES_ADRESS: postgres-db
+  postgres:
+    image: postgres:latest
+    container_name: postgres-db
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
